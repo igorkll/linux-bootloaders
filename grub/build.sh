@@ -32,13 +32,19 @@ build_grub_target() {
     local dir_name="${target}-${platform}"
     local build_path="build/${variant_name}/${dir_name}"
 
+    if [ "$platform" = "efi" ]; then
+        grub_output_file="grubx64.efi"
+    else
+        grub_output_file="core.img"
+    fi
+
     # ---- build
 
     mkdir -p ".${build_path}"
     cd ".${build_path}"
     ../../../.temp/grub-2.14/configure --with-platform=$platform --target=$target
     make -j$(nproc)
-    grub-mkimage -O "${dir_name}" -o "${}" -p /boot/grub biosdisk part_msdos part_gpt fat ext2 normal efi_gop efi_uga configfile
+    grub-mkimage -O "${dir_name}" -o "${grub_output_file}" -p /boot/grub biosdisk part_msdos part_gpt fat ext2 normal efi_gop efi_uga configfile
     cd ../../..
 
     # ---- export
