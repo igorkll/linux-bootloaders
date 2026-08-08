@@ -13,11 +13,11 @@ cd ..
 
 # -------------- build official grub
 
-rm -rf .build
-mkdir .build
+rm -rf build
+mkdir build
 
 reset_grub_variant() {
-    local variant_name=".build/$1"
+    local variant_name="build/$1"
 
     rm -rf "$variant_name"
     mkdir "$variant_name"
@@ -28,7 +28,7 @@ build_grub_target() {
     local platform="$2"
     local target="$3"
 
-    local build_path=".build/${variant_name}/${target}-${platform}"
+    local build_path="build/${variant_name}/${target}-${platform}"
 
     mkdir -p "${build_path}"
     cd "${build_path}"
