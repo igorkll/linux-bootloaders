@@ -13,11 +13,11 @@ cd ..
 
 # -------------- build official grub
 
-rm -rf build
-mkdir build
+rm -rf .build
+mkdir .build
 
 reset_grub_variant() {
-    local variant_name="build/$1"
+    local variant_name=".build/$1"
 
     rm -rf "$variant_name"
     mkdir "$variant_name"
@@ -30,10 +30,21 @@ build_grub_target() {
 
     local build_path="build/${variant_name}/${target}-${platform}"
 
-    mkdir -p "${build_path}"
-    cd "${build_path}"
+    # ---- build
+
+    mkdir -p ".${build_path}"
+    cd ".${build_path}"
     ../../../.temp/grub-2.14/configure --with-platform=$platform --target=$target
     make -j$(nproc)
+    cd ../../..
+    pwd
+
+    # ---- export build
+
+    mkdir -p "${build_path}"
+    cd "${build_path}"
+
+    cp -r ".${build_path}/grub-core/"* "${build_path}"
 }
 
 reset_grub_variant "official-2.14"
