@@ -44,7 +44,7 @@ build_grub_target() {
     mkdir -p "${build_path}"
     cd "${build_path}"
 
-    cp -r "${build_path}/grub-core/." "${build_path}/"
+    cp -r ".${build_path}/grub-core/." "${build_path}/"
 }
 
 reset_grub_variant "official-2.14"
