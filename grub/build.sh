@@ -32,9 +32,15 @@ build_grub_target() {
     local dir_name="${target}-${platform}"
     local build_path="build/${variant_name}/${dir_name}"
 
+    local modules="part_msdos part_gpt fat ext2 normal configfile"
+
     if [ "$platform" = "efi" ]; then
+        modules="${modules} efi_gop efi_uga"
+
         grub_output_file="grubx64.efi"
     else
+        modules="${modules} biosdisk"
+
         grub_output_file="core.img"
     fi
 
@@ -44,7 +50,7 @@ build_grub_target() {
     cd ".${build_path}"
     ../../../.temp/grub-2.14/configure --with-platform=$platform --target=$target
     make -j$(nproc)
-    grub-mkimage -O "${dir_name}" -o "${grub_output_file}" -p /boot/grub biosdisk part_msdos part_gpt fat ext2 normal efi_gop efi_uga configfile
+    grub-mkimage -O "${dir_name}" -o "${grub_output_file}" -p /boot/grub $modules
     cd ../../..
 
     # ---- export
@@ -54,13 +60,10 @@ build_grub_target() {
 }
 
 reset_grub_variant "official-2.14"
-build_grub_target "official-2.14" "pc" "x86_64"
-build_grub_target "official-2.14" "efi" "x86_64"
 build_grub_target "official-2.14" "pc" "i386"
+build_grub_target "official-2.14" "efi" "x86_64"
 build_grub_target "official-2.14" "efi" "i386"
-build_grub_target "official-2.14" "pc" "arm64"
 build_grub_target "official-2.14" "efi" "arm64"
-build_grub_target "official-2.14" "pc" "arm"
 build_grub_target "official-2.14" "efi" "arm"
 
 # -------------- cleanup
