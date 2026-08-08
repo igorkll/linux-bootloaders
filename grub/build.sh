@@ -2,6 +2,7 @@
 set -e
 
 # -------------- download grub
+
 rm -rf .temp
 mkdir .temp
 cd .temp
