@@ -28,6 +28,7 @@ build_grub_target() {
     local variant_name="$1"
     local platform="$2"
     local target="$3"
+    local compiller_target="$4"
 
     local dir_name="${target}-${platform}"
     local build_path="build/${variant_name}/${dir_name}"
@@ -35,9 +36,21 @@ build_grub_target() {
     local modules="part_msdos part_gpt fat ext2 normal configfile"
 
     if [ "$platform" = "efi" ]; then
-        modules="${modules} efi_gop efi_uga"
+        modules="${modules} efi_gop"
 
-        grub_output_file="grubx64.efi"
+        if [ "$target" == "x86_64" ] || [ "$target" == "i386" ]; then
+            modules="${modules} efi_uga"
+        fi
+
+        if [ "$target" == "x86_64" ]; then
+            grub_output_file="grubx64.efi"
+        elif [ "$target" == "i386" ]; then
+            grub_output_file="grubia32.efi"
+        elif [ "$target" == "arm64" ]; then
+            grub_output_file="grubaa64.efi"
+        elif [ "$target" == "arm" ]; then
+            grub_output_file="grubarm.efi"
+        fi
     else
         modules="${modules} biosdisk"
 
@@ -48,9 +61,9 @@ build_grub_target() {
 
     mkdir -p ".${build_path}"
     cd ".${build_path}"
-    ../../../.temp/grub-2.14/configure --with-platform=$platform --target=$target
+    ../../../.temp/grub-2.14/configure HOST_CPPFLAGS="-I$(pwd)" TARGET_CPPFLAGS="-I$(pwd)" --with-platform=$platform --target=$target --target=$compiller_target
     make -j$(nproc)
-    grub-mkimage -O "${dir_name}" -o "${grub_output_file}" -p /boot/grub $modules
+    grub-mkimage -O "${dir_name}" -o "${grub_output_file}" -p /boot/grub -d grub-core $modules
     cd ../../..
 
     # ---- export
@@ -60,11 +73,11 @@ build_grub_target() {
 }
 
 reset_grub_variant "official-2.14"
-build_grub_target "official-2.14" "pc" "i386"
-build_grub_target "official-2.14" "efi" "x86_64"
-build_grub_target "official-2.14" "efi" "i386"
-build_grub_target "official-2.14" "efi" "arm64"
-build_grub_target "official-2.14" "efi" "arm"
+# build_grub_target "official-2.14" "pc" "i386" "i686-linux-gnu"
+#build_grub_target "official-2.14" "efi" "x86_64" "x86_64-linux-gnu"
+#build_grub_target "official-2.14" "efi" "i386" "i686-linux-gnu"
+build_grub_target "official-2.14" "efi" "arm64" "aarch64-linux-gnu"
+build_grub_target "official-2.14" "efi" "arm" "aarch64-linux-gnu"
 
 # -------------- cleanup
 

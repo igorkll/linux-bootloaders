@@ -4,7 +4,9 @@ if [ "$EUID" -ne 0 ]; then
   exec sudo "$0" "$@"
 fi
 
-sudo apt-get install -y \
+apt install -y gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
+
+apt install -y \
     build-essential \
     bison \
     flex \
