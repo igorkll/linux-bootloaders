@@ -61,14 +61,19 @@ build_grub_target() {
 
     # ---- build
 
+    local extra_args=""
+
     local compiller_target="$target"
     if [ "$target" = "arm64" ]; then
         compiller_target="aarch64-linux-gnu"
+    elif [ "$target" = "arm" ]; then
+        compiller_target="arm-linux-gnu"
+        extra_args="CC=arm-linux-gnueabi-gcc CFLAGS=\"-march=armv7-a\" --host=arm-linux-gnueabi"
     fi
 
     mkdir -p ".${build_path}"
     cd ".${build_path}"
-    ../../../.temp/grub-2.14/configure HOST_CPPFLAGS="-I$(pwd)" TARGET_CPPFLAGS="-I$(pwd)" --with-platform=$platform --target=$compiller_target
+    ../../../.temp/grub-2.14/configure HOST_CPPFLAGS="-I$(pwd)" TARGET_CPPFLAGS="-I$(pwd)" --with-platform=$platform --target=$compiller_target $extra_args
     make -j$(nproc)
     grub-mkimage -O "${dir_name}" -o "${grub_output_file}" -p /boot/grub -d grub-core $modules
     cd ../../..
@@ -84,7 +89,7 @@ reset_grub_variant "official-2.14"
 #build_grub_target "official-2.14" "efi" "x86_64"
 #build_grub_target "official-2.14" "efi" "i386"
 build_grub_target "official-2.14" "efi" "arm64"
-build_grub_target "official-2.14" "efi" "arm"
+# build_grub_target "official-2.14" "efi" "arm"
 
 # -------------- cleanup
 

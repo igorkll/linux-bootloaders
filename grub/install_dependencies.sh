@@ -5,6 +5,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 apt install -y gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
+apt install -y gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi
 
 apt install -y \
     build-essential \
