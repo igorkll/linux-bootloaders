@@ -25,7 +25,10 @@ build_grub_target() {
     local platform="$2"
     local target="$3"
 
-    cd "${variant_name}/${target}-${platform}"
+    local build_path="${variant_name}/${target}-${platform}"
+
+    mkdir -p "${build_path}"
+    cd "${build_path}"
     .temp/grub-2.14/configure --with-platform=$platform --target=$target
 }
 
