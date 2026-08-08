@@ -1,14 +1,25 @@
 #!/bin/bash
 set -e
 
+BASE_GRUB="grub-2.14"
+
 # -------------- download grub
 
 rm -rf .temp
 mkdir .temp
 cd .temp
 
-wget https://ftp.gnu.org/gnu/grub/grub-2.14.tar.xz
-tar -xvf grub-2.14.tar.xz
+wget "https://ftp.gnu.org/gnu/grub/${BASE_GRUB}.tar.xz"
+tar -xvf "${BASE_GRUB}.tar.xz"
+
+clone_grub() {
+    mkdir -p "$2"
+    cp -r "$1/." "$2/"
+}
+
+clone_grub "$BASE_GRUB" "no-welcome-$BASE_GRUB"
+
+cp ../patches/disable_welcome_main.c "no-welcome-$BASE_GRUB/grub-core/kern/main.c"
 
 cd ..
 
@@ -28,9 +39,10 @@ reset_grub_variant() {
 }
 
 build_grub_target() {
-    local variant_name="$1"
-    local platform="$2"
-    local target="$3"
+    local base_grub_name="$1"
+    local variant_name="$2"
+    local platform="$3"
+    local target="$4"
 
     local dir_name="${target}-${platform}"
     local build_path="build/${variant_name}/${dir_name}"
@@ -73,7 +85,7 @@ build_grub_target() {
 
     mkdir -p ".${build_path}"
     cd ".${build_path}"
-    ../../../.temp/grub-2.14/configure HOST_CPPFLAGS="-I$(pwd)" TARGET_CPPFLAGS="-I$(pwd)" --with-platform=$platform --target=$compiller_target $extra_args
+    ../../../.temp/$base_grub_name/configure HOST_CPPFLAGS="-I$(pwd)" TARGET_CPPFLAGS="-I$(pwd)" --with-platform=$platform --target=$compiller_target $extra_args
     make -j$(nproc)
     grub-mkimage -O "${dir_name}" -o "${grub_output_file}" -p /boot/grub -d grub-core $modules
     cd ../../..
@@ -85,11 +97,18 @@ build_grub_target() {
 }
 
 reset_grub_variant "official-2.14"
-# build_grub_target "official-2.14" "pc" "i386"
-#build_grub_target "official-2.14" "efi" "x86_64"
-#build_grub_target "official-2.14" "efi" "i386"
-build_grub_target "official-2.14" "efi" "arm64"
-# build_grub_target "official-2.14" "efi" "arm"
+#build_grub_target "grub-2.14" "official-2.14" "pc" "i386"
+build_grub_target "grub-2.14" "official-2.14" "efi" "x86_64"
+#build_grub_target "grub-2.14" "official-2.14" "efi" "i386"
+build_grub_target "grub-2.14" "official-2.14" "efi" "arm64"
+# build_grub_target "grub-2.14" "official-2.14" "efi" "arm"
+
+reset_grub_variant "no-welcome-2.14"
+#build_grub_target "no-welcome-grub-2.14" "no-welcome-2.14" "pc" "i386"
+build_grub_target "no-welcome-grub-2.14" "no-welcome-2.14" "efi" "x86_64"
+#build_grub_target "no-welcome-grub-2.14" "no-welcome-2.14" "efi" "i386"
+build_grub_target "no-welcome-grub-2.14" "no-welcome-2.14" "efi" "arm64"
+# build_grub_target "no-welcome-grub-2.14" "no-welcome-2.14" "efi" "arm"
 
 # -------------- cleanup
 
