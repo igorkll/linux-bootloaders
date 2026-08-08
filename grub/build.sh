@@ -2,7 +2,6 @@
 set -e
 
 # -------------- download grub
-
 rm -rf .temp
 mkdir .temp
 cd .temp
@@ -13,6 +12,9 @@ tar -xvf grub-2.14.tar.xz
 cd ..
 
 # -------------- build official grub
+
+rm -rf .build
+mkdir .build
 
 reset_grub_variant() {
     local variant_name="$1"
@@ -26,7 +28,7 @@ build_grub_target() {
     local platform="$2"
     local target="$3"
 
-    local build_path="${variant_name}/${target}-${platform}"
+    local build_path=".build/${variant_name}/${target}-${platform}"
 
     mkdir -p "${build_path}"
     cd "${build_path}"
