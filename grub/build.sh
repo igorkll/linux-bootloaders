@@ -14,7 +14,7 @@ tar -xvf "${BASE_GRUB}.tar.xz"
 
 clone_grub() {
     mkdir -p "$2"
-    cp -r "$1/." "$2/"
+    cp -a "$1/." "$2/"
 }
 
 clone_grub "$BASE_GRUB" "no-welcome-$BASE_GRUB"
