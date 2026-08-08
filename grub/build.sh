@@ -32,7 +32,7 @@ build_grub_target() {
 
     mkdir -p "${build_path}"
     cd "${build_path}"
-    ../../.temp/grub-2.14/configure --with-platform=$platform --target=$target
+    ../../../.temp/grub-2.14/configure --with-platform=$platform --target=$target
     make -j$(nproc)
 }
 
