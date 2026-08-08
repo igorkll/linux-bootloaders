@@ -87,7 +87,7 @@ build_grub_target() {
     cd ".${build_path}"
     ../../../.temp/$base_grub_name/configure HOST_CPPFLAGS="-I$(pwd)" TARGET_CPPFLAGS="-I$(pwd)" --with-platform=$platform --target=$compiller_target $extra_args
     make -j$(nproc)
-    grub-mkimage -O "${dir_name}" -o "${grub_output_file}" -p /boot/grub -d grub-core $modules
+    grub-mkimage -O "${dir_name}" -o "grub-core/${grub_output_file}" -p /boot/grub -d grub-core $modules
     cd ../../..
 
     # ---- export
