@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # -------------- download grub
 
@@ -29,11 +30,10 @@ build_grub_target() {
 
     mkdir -p "${build_path}"
     cd "${build_path}"
-    .temp/grub-2.14/configure --with-platform=$platform --target=$target
+    ../../.temp/grub-2.14/configure --with-platform=$platform --target=$target
+    make -j$(nproc)
 }
 
 reset_grub_variant "official-2.14"
-build_grub_target "official-2.14" "efi" "x86-64"
+build_grub_target "official-2.14" "efi" "x86_64"
 
-
-.temp/grub-2.14/configure --with-platform=efi --target=x86_64
