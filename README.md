@@ -1,2 +1,2 @@
 # linux-bootloaders
- assembled boot loaders for linux for different platforms
+assembled boot loaders for linux for different platforms  
