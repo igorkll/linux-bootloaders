@@ -28,7 +28,6 @@ build_grub_target() {
     local variant_name="$1"
     local platform="$2"
     local target="$3"
-    local compiller_target="$4"
 
     local dir_name="${target}-${platform}"
     local build_path="build/${variant_name}/${dir_name}"
@@ -59,9 +58,14 @@ build_grub_target() {
 
     # ---- build
 
+    local compiller_target="$target"
+    if [ "$target" = "arm64" ]; then
+        compiller_target="aarch64-linux-gnu"
+    fi
+
     mkdir -p ".${build_path}"
     cd ".${build_path}"
-    ../../../.temp/grub-2.14/configure HOST_CPPFLAGS="-I$(pwd)" TARGET_CPPFLAGS="-I$(pwd)" --with-platform=$platform --target=$target --target=$compiller_target
+    ../../../.temp/grub-2.14/configure HOST_CPPFLAGS="-I$(pwd)" TARGET_CPPFLAGS="-I$(pwd)" --with-platform=$platform --target=$compiller_target
     make -j$(nproc)
     grub-mkimage -O "${dir_name}" -o "${grub_output_file}" -p /boot/grub -d grub-core $modules
     cd ../../..
@@ -73,11 +77,11 @@ build_grub_target() {
 }
 
 reset_grub_variant "official-2.14"
-# build_grub_target "official-2.14" "pc" "i386" "i686-linux-gnu"
-#build_grub_target "official-2.14" "efi" "x86_64" "x86_64-linux-gnu"
-#build_grub_target "official-2.14" "efi" "i386" "i686-linux-gnu"
-build_grub_target "official-2.14" "efi" "arm64" "aarch64-linux-gnu"
-build_grub_target "official-2.14" "efi" "arm" "aarch64-linux-gnu"
+# build_grub_target "official-2.14" "pc" "i386"
+#build_grub_target "official-2.14" "efi" "x86_64"
+#build_grub_target "official-2.14" "efi" "i386"
+build_grub_target "official-2.14" "efi" "arm64"
+build_grub_target "official-2.14" "efi" "arm"
 
 # -------------- cleanup
 
