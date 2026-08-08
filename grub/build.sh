@@ -17,6 +17,9 @@ cd ..
 rm -rf .build
 mkdir .build
 
+rm -rf build
+mkdir build
+
 reset_grub_variant() {
     local variant_name=".build/$1"
 
