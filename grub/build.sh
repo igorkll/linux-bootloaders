@@ -43,8 +43,6 @@ build_grub_target() {
     # ---- export build
 
     mkdir -p "${build_path}"
-    cd "${build_path}"
-
     cp -r ".${build_path}/grub-core/." "${build_path}/"
 }
 
