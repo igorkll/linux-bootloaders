@@ -47,30 +47,6 @@ build_grub_target() {
     local dir_name="${target}-${platform}"
     local build_path="build/${variant_name}/${dir_name}"
 
-    local modules="part_msdos part_gpt fat ext2 normal configfile"
-
-    if [ "$platform" = "efi" ]; then
-        modules="${modules} efi_gop"
-
-        if [ "$target" == "x86_64" ] || [ "$target" == "i386" ]; then
-            modules="${modules} efi_uga"
-        fi
-
-        if [ "$target" == "x86_64" ]; then
-            grub_output_file="grubx64.efi"
-        elif [ "$target" == "i386" ]; then
-            grub_output_file="grubia32.efi"
-        elif [ "$target" == "arm64" ]; then
-            grub_output_file="grubaa64.efi"
-        elif [ "$target" == "arm" ]; then
-            grub_output_file="grubarm.efi"
-        fi
-    else
-        modules="${modules} biosdisk"
-
-        grub_output_file="core.img"
-    fi
-
     # ---- build
 
     local extra_args=""
@@ -87,7 +63,6 @@ build_grub_target() {
     cd ".${build_path}"
     ../../../.temp/$base_grub_name/configure HOST_CPPFLAGS="-I$(pwd)" TARGET_CPPFLAGS="-I$(pwd)" --with-platform=$platform --target=$compiller_target $extra_args
     make -j$(nproc)
-    grub-mkimage -O "${dir_name}" -o "grub-core/${grub_output_file}" -p /boot/grub -d grub-core $modules
     cd ../../..
 
     # ---- export
@@ -97,16 +72,16 @@ build_grub_target() {
 }
 
 reset_grub_variant "official-2.14"
-#build_grub_target "grub-2.14" "official-2.14" "pc" "i386"
+build_grub_target "grub-2.14" "official-2.14" "pc" "i386"
 build_grub_target "grub-2.14" "official-2.14" "efi" "x86_64"
-#build_grub_target "grub-2.14" "official-2.14" "efi" "i386"
+build_grub_target "grub-2.14" "official-2.14" "efi" "i386"
 build_grub_target "grub-2.14" "official-2.14" "efi" "arm64"
 # build_grub_target "grub-2.14" "official-2.14" "efi" "arm"
 
 reset_grub_variant "no-welcome-2.14"
-#build_grub_target "no-welcome-grub-2.14" "no-welcome-2.14" "pc" "i386"
+build_grub_target "no-welcome-grub-2.14" "no-welcome-2.14" "pc" "i386"
 build_grub_target "no-welcome-grub-2.14" "no-welcome-2.14" "efi" "x86_64"
-#build_grub_target "no-welcome-grub-2.14" "no-welcome-2.14" "efi" "i386"
+build_grub_target "no-welcome-grub-2.14" "no-welcome-2.14" "efi" "i386"
 build_grub_target "no-welcome-grub-2.14" "no-welcome-2.14" "efi" "arm64"
 # build_grub_target "no-welcome-grub-2.14" "no-welcome-2.14" "efi" "arm"
 
