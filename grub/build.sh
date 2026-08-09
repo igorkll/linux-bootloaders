@@ -20,6 +20,8 @@ clone_grub() {
 clone_grub "$BASE_GRUB" "no-welcome-$BASE_GRUB"
 
 cp ../patches/disable_welcome_main.c "no-welcome-$BASE_GRUB/grub-core/kern/main.c"
+cp ../patches/quiet_diskboot.S "no-welcome-$BASE_GRUB/grub-core/boot/i386/pc/diskboot.S"
+cp ../patches/quiet_boot.S "no-welcome-$BASE_GRUB/grub-core/boot/i386/pc/boot.S"
 
 cd ..
 
@@ -87,5 +89,5 @@ build_grub_target "no-welcome-grub-2.14" "no-welcome-2.14" "efi" "arm64"
 
 # -------------- cleanup
 
-rm -rf .temp
-rm -rf .build
+# rm -rf .temp
+# rm -rf .build
