@@ -315,6 +315,12 @@
  
    /* First of all, initialize the machine.  */
    grub_machine_init ();
+
+   {
+      struct grub_term_output *term;
+      FOR_ACTIVE_TERM_OUTPUTS(term)
+        grub_term_setcursor (term, 0);
+  }
  
    grub_boot_time ("After machine init.");
  

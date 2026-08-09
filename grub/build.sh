@@ -89,5 +89,5 @@ build_grub_target "no-welcome-grub-2.14" "no-welcome-2.14" "efi" "arm64"
 
 # -------------- cleanup
 
-# rm -rf .temp
-# rm -rf .build
+rm -rf .temp
+rm -rf .build
