@@ -315,7 +315,6 @@
  
    /* First of all, initialize the machine.  */
    grub_machine_init ();
-   grub_term_setcursor (grub_console_get_current_output (), 0);
  
    grub_boot_time ("After machine init.");
  
